@@ -1,6 +1,8 @@
 import Flutter
 import UIKit
 import FBSDKCoreKit
+import FBSDKCoreKit_Basics
+import FBAudienceNetwork
 
 let PLATFORM_CHANNEL = "flutter_facebook_sdk/methodChannel"
 let EVENTS_CHANNEL = "flutter_facebook_sdk/eventChannel"
@@ -149,7 +151,7 @@ public class SwiftFlutterFacebookSdkPlugin: NSObject, FlutterPlugin, FlutterStre
     func logGenericEvent(args: [String: Any]){
         let eventName = args["eventName"] as! String
         let valueToSum = args["valueToSum"] as? Double
-        let parameters = args["parameters"] as? [AppEvents.ParameterName: Any]
+        let parameters = args["parameters"] as? [AppEvents.ParameterName: Any] ?? [AppEvents.ParameterName: Any]()
         if(valueToSum != nil && parameters != nil){
             AppEvents.shared.logEvent(AppEvents.Name(eventName), valueToSum: valueToSum!, parameters: parameters)
         }else if(parameters != nil){
@@ -168,6 +170,33 @@ public class SwiftFlutterFacebookSdkPlugin: NSObject, FlutterPlugin, FlutterStre
         }
         eventSink(link)
         
+    }
+
+    private func handleSetAdvertiserTracking(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as? [String: Any] ?? [String: Any]()
+        let enabled = arguments["enabled"] as! Bool
+        let collectId = arguments["collectId"] as! Bool
+        FBAdSettings.setAdvertiserTrackingEnabled(enabled)
+        Settings.shared.isAdvertiserTrackingEnabled = enabled
+        Settings.shared.isAdvertiserIDCollectionEnabled = collectId
+        result(nil)
+    }
+
+    private func handleSetDataProcessingOptions(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let arguments = call.arguments as? [String: Any] ?? [String: Any]()
+        let modes = arguments["options"] as? [String] ?? []
+        let state = arguments["state"] as? Int32 ?? 0
+        let country = arguments["country"] as? Int32 ?? 0
+
+        Settings.shared.setDataProcessingOptions(modes, country: country, state: state)
+
+        result(nil)
+    }
+
+    private func handleSetAutoLogAppEventsEnabled(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let enabled = arguments["enabled"] as! Bool
+        Settings.shared.isAutoLogAppEventsEnabled = enabled
+        result(nil)
     }
 
     private func handleSetUserData(_ call: FlutterMethodCall, result: @escaping FlutterResult) {        
@@ -196,7 +225,6 @@ public class SwiftFlutterFacebookSdkPlugin: NSObject, FlutterPlugin, FlutterStre
         case "getPlatformVersion":
             result("iOS " + UIDevice.current.systemVersion)
         case "getDeepLinkUrl":
-            
             result(deepLinkUrl.isEmpty ? nil : deepLinkUrl)
         case "logViewedContent", "logAddToCart", "logAddToWishlist":
             guard let args = call.arguments else {
@@ -291,12 +319,14 @@ public class SwiftFlutterFacebookSdkPlugin: NSObject, FlutterPlugin, FlutterStre
                 result(false)
                 return
             }
-            if  let myArgs = args as? [String: Any],
-                let enabled = myArgs["enabled"] as? Bool {
-                Settings.shared.isAdvertiserTrackingEnabled = enabled
-                result(enabled)
-                return
-            }
+            handleSetAdvertiserTracking(call, result: result)
+            break
+        case "setDataProcessingOptions":
+            handleSetDataProcessingOptions(call, result: result)
+            break
+        case "setAutoLogAppEventsEnabled":
+            handleSetAutoLogAppEventsEnabled(call, result: result)
+            break
         case "logEvent":
             guard let args = call.arguments else {
                 result(false)

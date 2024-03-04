@@ -254,9 +254,31 @@ class FlutterFacebookSdk {
   /// Only Available in iOS
   /// Set the advertiser tracking to true or false
   /// App events won't work if this is disabled
-  Future<bool> setAdvertiserTracking({required bool isEnabled}) async {
-    final bool result = await _channel
-        .invokeMethod("setAdvertiserTracking", {"enabled": isEnabled});
+  Future<bool> setAdvertiserTracking(
+      {required bool isEnabled, bool? collectId}) async {
+    final bool result = await _channel.invokeMethod("setAdvertiserTracking", {
+      "enabled": isEnabled,
+      'collectId': collectId,
+    });
+    return result;
+  }
+
+  Future<bool> setDataProcessingOptions(
+      {required List<String> options, int? state, int? country}) async {
+    final bool result =
+        await _channel.invokeMethod("setDataProcessingOptions", {
+      "options": options,
+      'state': state,
+      'country': country,
+    });
+    return result;
+  }
+
+  Future<bool> setAutoLogAppEventsEnabled({required bool isEnabled}) async {
+    final bool result =
+        await _channel.invokeMethod("setAutoLogAppEventsEnabled", {
+      "enabled": isEnabled,
+    });
     return result;
   }
 }

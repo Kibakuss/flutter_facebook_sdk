@@ -129,6 +129,21 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
                 val args = call.arguments as HashMap<String, Any>
                 logGenericEvent(args)
             }
+            "setAdvertiserTracking" -> {
+                val args = call.arguments as HashMap<String, Any>
+                val enabled = args["enabled"] as Boolean
+                AppEventsLogger.setAdvertiserIDCollectionEnabled(enabled)
+                result.success(null)
+            }
+            "setDataProcessingOptions" -> {
+                handleSetDataProcessingOptions(call, result)
+            }
+            "setAutoLogAppEventsEnabled" -> {
+                val args = call.arguments as HashMap<String, Any>
+                val enabled = args["enabled"] as Boolean
+                FacebookSdk.setAutoLogAppEventsEnabled(enabled)
+                result.success(null)
+            }
             "setUserID" -> {
                 handleSetUserId(call, result)
             }
@@ -191,12 +206,12 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
     private fun logGenericEvent(args : HashMap<String, Any>){
         val eventName = args["eventName"] as? String
         val valueToSum = args["valueToSum"] as? Double
-        val parameters = args["parameters"] as? HashMap<String, Any>
+        val parameters = call.argument("parameters") as? Map<String, Object>
         if (valueToSum != null && parameters != null) {
-            val parameterBundle = createBundleFromMap(args["parameters"] as HashMap<String, Any>)
+            val parameterBundle = createBundleFromMap(args["parameters"])
             logger.logEvent(eventName, valueToSum, parameterBundle)
         }else if(parameters != null){
-            val parameterBundle = createBundleFromMap(args["parameters"] as HashMap<String, Any>)
+            val parameterBundle = createBundleFromMap(args["parameters"])
             logger.logEvent(eventName, parameterBundle)
         }else if(valueToSum != null){
             logger.logEvent(eventName, valueToSum)
@@ -309,6 +324,15 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
         }
         return bundle
     }
+
+    private fun handleSetDataProcessingOptions(call: MethodCall, result: Result) {
+        val options = call.argument("options") as? ArrayList<String> ?: arrayListOf()
+        val country = call.argument("country") as? Int ?: 0
+        val state = call.argument("state") as? Int ?: 0
+    
+        FacebookSdk.setDataProcessingOptions(options.toTypedArray(), country, state)
+        result.success(null)
+      }
 
     override fun onDetachedFromActivity() {
 
