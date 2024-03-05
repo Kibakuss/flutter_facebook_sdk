@@ -257,7 +257,7 @@ class FlutterFacebookSdk {
   Future<bool> setAdvertiserTracking(
       {required bool isEnabled, bool? collectId}) async {
     final bool result = await _channel.invokeMethod("setAdvertiserTracking", {
-      "enabled": isEnabled,
+      'enabled': isEnabled,
       'collectId': collectId,
     });
     return result;
