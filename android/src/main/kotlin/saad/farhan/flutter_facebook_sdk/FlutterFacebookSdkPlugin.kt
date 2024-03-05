@@ -133,7 +133,7 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
                 val args = call.arguments as HashMap<String, Any>
                 val enabled = args["enabled"] as Boolean
                 AppEventsLogger.setAdvertiserIDCollectionEnabled(enabled)
-                result.success(null)
+                result.success(true)
             }
             "setDataProcessingOptions" -> {
                 handleSetDataProcessingOptions(call, result)
