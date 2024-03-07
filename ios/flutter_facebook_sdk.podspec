@@ -18,6 +18,7 @@ A new flutter plugin project.
   s.dependency 'FBSDKCoreKit', '~> 16.3.1'
   s.dependency 'FBAudienceNetwork', '~> 6.14.0'
   s.platform = :ios, '13.0'
+  s.static_framework = true
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
