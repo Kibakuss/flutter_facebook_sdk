@@ -208,10 +208,10 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
         val valueToSum = args["valueToSum"] as? Double
         val parameters = args["parameters"] as? HashMap<String, Any>
         if (valueToSum != null && parameters != null) {
-            val parameterBundle = createBundleFromMap(args["parameters"])
+            val parameterBundle = createBundleFromMap(parameters)
             logger.logEvent(eventName, valueToSum, parameterBundle)
         }else if(parameters != null){
-            val parameterBundle = createBundleFromMap(args["parameters"])
+            val parameterBundle = createBundleFromMap(parameters)
             logger.logEvent(eventName, parameterBundle)
         }else if(valueToSum != null){
             logger.logEvent(eventName, valueToSum)
