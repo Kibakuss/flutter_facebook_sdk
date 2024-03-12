@@ -130,9 +130,9 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
                 logGenericEvent(args)
             }
             "setAdvertiserTracking" -> {
-                val args = call.arguments as HashMap<String, Any>
-                val enabled = args["enabled"] as Boolean
-                AppEventsLogger.setAdvertiserIDCollectionEnabled(enabled)
+                // val args = call.arguments as HashMap<String, Any>
+                // val enabled = args["enabled"] as Boolean
+                // AppEventsLogger.setAdvertiserIDCollectionEnabled(enabled)
                 result.success(true)
             }
             "setDataProcessingOptions" -> {
@@ -206,7 +206,7 @@ class FlutterFacebookSdkPlugin : FlutterPlugin, MethodCallHandler, StreamHandler
     private fun logGenericEvent(args : HashMap<String, Any>){
         val eventName = args["eventName"] as? String
         val valueToSum = args["valueToSum"] as? Double
-        val parameters = call.argument("parameters") as? Map<String, Object>
+        val parameters = args["parameters"] as? HashMap<String, Any>
         if (valueToSum != null && parameters != null) {
             val parameterBundle = createBundleFromMap(args["parameters"])
             logger.logEvent(eventName, valueToSum, parameterBundle)
