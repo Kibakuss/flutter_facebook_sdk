@@ -4,8 +4,7 @@ version: 1.3.8
 homepage: https://github.com/saadfarhan124/flutter_facebook_sdk
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: ">=3.3.4 <4.0.0"
 
 dependencies:
   flutter:

@@ -15,8 +15,8 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'FBSDKCoreKit', '~> 16.3.1'
-  s.dependency 'FBAudienceNetwork', '~> 6.14.0'
+  s.dependency 'FBSDKCoreKit', '~> 17.0.1'
+  s.dependency 'FBAudienceNetwork', '~> 6.15.0'
   s.platform = :ios, '13.0'
   s.static_framework = true
 
